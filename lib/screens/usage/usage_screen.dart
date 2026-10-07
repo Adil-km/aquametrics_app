@@ -1,153 +1,152 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../app/theme/app_colors.dart';
+import '../../providers/usage_provider.dart';
+import '../../core/widgets/network_error_widget.dart';
 import 'widgets/usage_summary_card.dart';
 import 'widgets/breakdown_card.dart';
 import 'widgets/usage_tip_card.dart';
 
-class UsageScreen extends StatefulWidget {
+class UsageScreen extends StatelessWidget {
   const UsageScreen({super.key});
 
   @override
-  State<UsageScreen> createState() => _UsageScreenState();
-}
-
-class _UsageScreenState extends State<UsageScreen> {
-  bool isWeekSelected = true;
-
-  @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Water Usage',
-              style: TextStyle(
-                color: AppColors.textPrimary,
-                fontSize: 28,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const SizedBox(height: 20),
-            
-            Container(
-              height: 40,
-              decoration: BoxDecoration(
-                color: AppColors.backgroundSoft,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => setState(() => isWeekSelected = true),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: isWeekSelected ? AppColors.textPrimary : Colors.transparent,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Week',
-                          style: TextStyle(
-                            color: isWeekSelected ? AppColors.surfaceWhite : AppColors.textSecondary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
+    return Consumer<UsageProvider>(
+      builder: (context, provider, child) {
+        
+        if (provider.state == UsageViewState.loading) {
+          return const Center(
+            child: CircularProgressIndicator(color: AppColors.primaryBlue),
+          );
+        }
+
+        if (provider.state == UsageViewState.error) {
+          return NetworkErrorWidget(
+            message: provider.errorMessage,
+            onRetry: provider.fetchUsageData,
+          );
+        }
+
+        final bool isWeek = provider.isWeekSelected;
+
+        return SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Water Usage',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontSize: 28,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                
+                // Custom Week/Month Toggle
+                Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundSoft,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => provider.togglePeriod(true),
+                          behavior: HitTestBehavior.opaque,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: isWeek ? AppColors.textPrimary : Colors.transparent,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Week',
+                              style: TextStyle(
+                                color: isWeek ? AppColors.surfaceWhite : AppColors.textSecondary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => setState(() => isWeekSelected = false),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: !isWeekSelected ? AppColors.textPrimary : Colors.transparent,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Month',
-                          style: TextStyle(
-                            color: !isWeekSelected ? AppColors.surfaceWhite : AppColors.textSecondary,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => provider.togglePeriod(false),
+                          behavior: HitTestBehavior.opaque,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: !isWeek ? AppColors.textPrimary : Colors.transparent,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Month',
+                              style: TextStyle(
+                                color: !isWeek ? AppColors.surfaceWhite : AppColors.textSecondary,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                const SizedBox(height: 24),
+                
+                // Dynamic Summary Card
+                UsageSummaryCard(
+                  mainTitle: isWeek ? 'Today' : 'This Month',
+                  mainValue: isWeek 
+                      ? provider.formatNumber(provider.todayUsage) 
+                      : provider.formatNumber(provider.periodTotal),
+                  subTitle1: isWeek ? 'This week' : 'Weekly Average',
+                  subValue1: isWeek 
+                      ? provider.formatNumber(provider.periodTotal)
+                      : provider.formatNumber((provider.periodTotal / 4).round()),
+                  subTitle2: isWeek ? 'Average' : 'Daily Average',
+                  subValue2: provider.formatNumber(provider.periodAverage),
+                  subUnit2: 'L / day',
+                ),
+                
+                const SizedBox(height: 16),
+                
+                // Interactive Breakdown Chart
+                BreakdownCard(
+                  title: isWeek ? 'Daily\nBreakdown' : 'Monthly\nBreakdown',
+                  periodLabel: provider.activePeriodLabel,
+                  tooltipValue: provider.activeTooltipValue,
+                  tooltipAlignment: provider.tooltipAlignment, // Tracks the active bar
+                  bars: provider.chartBars.isEmpty 
+                      ? [{'label': 'N/A', 'height': 0.0, 'active': false}] 
+                      : provider.chartBars,
+                  onLeftTap: provider.previousBar,    // Connects left arrow
+                  onRightTap: provider.nextBar,       // Connects right arrow
+                  onBarTap: provider.selectBarIndex,  // Connects direct bar taps
+                ),
+                
+                const SizedBox(height: 16),
+                
+                UsageTipCard(
+                  tipText: isWeek 
+                      ? 'Typical household usage is steady. You have plenty of water reserved, and consumption is well within normal limits.'
+                      : 'Your monthly consumption looks great. Household water efficiency remains in the optimal range.',
+                ),
+                
+                const SizedBox(height: 24),
+              ],
             ),
-            const SizedBox(height: 24),
-            
-            if (isWeekSelected) ...[
-              const UsageSummaryCard(
-                mainTitle: 'Today',
-                mainValue: '340',
-                subTitle1: 'This week',
-                subValue1: '2,140',
-                subTitle2: 'Average',
-                subValue2: '305',
-                subUnit2: 'L / day',
-              ),
-              const SizedBox(height: 16),
-              BreakdownCard(
-                title: 'Daily\nBreakdown',
-                periodLabel: 'Friday',
-                tooltipValue: '340 L',
-                tooltipAlignment: const Alignment(0.25, 0), // Roughly aligns over Friday
-                bars: const [
-                  {'label': 'Mon', 'height': 0.4, 'active': false},
-                  {'label': 'Tue', 'height': 0.5, 'active': false},
-                  {'label': 'Wed', 'height': 0.7, 'active': false},
-                  {'label': 'Thu', 'height': 0.45, 'active': false},
-                  {'label': 'Fri', 'height': 0.9, 'active': true},
-                  {'label': 'Sat', 'height': 0.6, 'active': false},
-                  {'label': 'Sun', 'height': 0.35, 'active': false},
-                ],
-              ),
-              const SizedBox(height: 16),
-              const UsageTipCard(
-                tipText: 'Typical household usage is steady. You have plenty of water reserved, and consumption is well within...',
-              ),
-            ] else ...[
-              const UsageSummaryCard(
-                mainTitle: 'This Month',
-                mainValue: '9,420',
-                subTitle1: 'Weekly Average',
-                subValue1: '2,210',
-                subTitle2: 'Daily Average',
-                subValue2: '304',
-                subUnit2: 'L / day',
-              ),
-              const SizedBox(height: 16),
-              BreakdownCard(
-                title: 'Monthly\nBreakdown',
-                periodLabel: 'October',
-                tooltipValue: '2,430 L',
-                tooltipAlignment: const Alignment(0.85, 0), // Roughly aligns over Week 4
-                bars: const [
-                  {'label': 'Week 1', 'height': 0.5, 'active': false},
-                  {'label': 'Week 2', 'height': 0.7, 'active': false},
-                  {'label': 'Week 3', 'height': 0.6, 'active': false},
-                  {'label': 'Week 4', 'height': 0.95, 'active': true},
-                ],
-              ),
-              const SizedBox(height: 16),
-              const UsageTipCard(
-                tipText: 'Your monthly consumption is 4% lower than last month. Household water efficiency remains in the...',
-              ),
-            ],
-            
-            const SizedBox(height: 24),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

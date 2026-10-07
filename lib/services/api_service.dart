@@ -37,4 +37,13 @@ class ApiService {
   Future<void> togglePump(int tankId, String command) async {
     await _dio.post('/tanks/$tankId/pump', data: {'command': command});
   }
+
+  Future<Map<String, dynamic>> getUsageHistory(int tankId, String period) async {
+    final response = await _dio.get(
+      '/tanks/$tankId/history/usage',
+      queryParameters: {'period': period},
+    );
+    return response.data;
+  }
+
 }

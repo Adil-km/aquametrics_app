@@ -1,4 +1,3 @@
-import 'package:aquametrics/app/theme/app_shadows.dart';
 import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 import 'period_selector.dart';
@@ -9,6 +8,9 @@ class BreakdownCard extends StatelessWidget {
   final String tooltipValue;
   final Alignment tooltipAlignment;
   final List<Map<String, dynamic>> bars;
+  final VoidCallback onLeftTap;
+  final VoidCallback onRightTap;
+  final Function(int) onBarTap;
 
   const BreakdownCard({
     super.key,
@@ -17,6 +19,9 @@ class BreakdownCard extends StatelessWidget {
     required this.tooltipValue,
     required this.tooltipAlignment,
     required this.bars,
+    required this.onLeftTap,
+    required this.onRightTap,
+    required this.onBarTap,
   });
 
   @override
@@ -26,7 +31,6 @@ class BreakdownCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surfaceWhite,
         borderRadius: BorderRadius.circular(24),
-        boxShadow: AppShadows.card,
       ),
       child: Column(
         children: [
@@ -50,18 +54,17 @@ class BreakdownCard extends StatelessWidget {
               ),
               PeriodSelector(
                 label: periodLabel,
-                onLeftTap: () {
-                  // Add previous period logic here
-                },
-                onRightTap: () {
-                  // Add next period logic here
-                },
+                onLeftTap: onLeftTap,
+                onRightTap: onRightTap,
               ),
             ],
           ),
           const SizedBox(height: 32),
           
-          Align(
+          // Tooltip container - dynamically aligned
+          AnimatedAlign(
+            duration: const Duration(milliseconds: 200),
+            curve: Curves.easeOut,
             alignment: tooltipAlignment,
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
@@ -92,30 +95,39 @@ class BreakdownCard extends StatelessWidget {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.end,
-                  children: bars.map((data) {
+                  // Convert map to asMap().entries to get the index for the onBarTap callback
+                  children: bars.asMap().entries.map((entry) {
+                    final int index = entry.key;
+                    final data = entry.value;
                     final isActive = data['active'] as bool;
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Container(
-                          width: bars.length == 4 ? 48 : 32,
-                          height: 100 * (data['height'] as double),
-                          decoration: BoxDecoration(
-                            // UPDATED: Using backgroundMuted for better visibility on inactive bars
-                            color: isActive ? AppColors.primaryBlue : AppColors.backgroundMuted,
-                            borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+                    
+                    return GestureDetector(
+                      onTap: () => onBarTap(index),
+                      behavior: HitTestBehavior.opaque, // Ensures the tap registers even on empty space above the bar
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeOut,
+                            width: bars.length == 4 ? 48 : 32,
+                            height: 100 * (data['height'] as double),
+                            decoration: BoxDecoration(
+                              color: isActive ? AppColors.primaryBlue : AppColors.backgroundMuted,
+                              borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          data['label'] as String,
-                          style: TextStyle(
-                            fontSize: 10,
-                            fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
-                            color: isActive ? AppColors.primaryBlue : AppColors.textTertiary,
+                          const SizedBox(height: 8),
+                          Text(
+                            data['label'] as String,
+                            style: TextStyle(
+                              fontSize: 10,
+                              fontWeight: isActive ? FontWeight.bold : FontWeight.normal,
+                              color: isActive ? AppColors.primaryBlue : AppColors.textTertiary,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     );
                   }).toList(),
                 ),
@@ -143,7 +155,7 @@ class BreakdownCard extends StatelessWidget {
                 width: dashWidth,
                 height: 1,
                 child: DecoratedBox(
-                  decoration: BoxDecoration(color: AppColors.dividerGray.withOpacity(0.5)),
+                  decoration: BoxDecoration(color: AppColors.dividerGray.withValues(alpha: 0.5)),
                 ),
               );
             }),
