@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/widgets/app_top_bar.dart';
 import '../../core/widgets/app_bottom_nav.dart';
+
 import '../home/home_screen.dart';
 import '../usage/usage_screen.dart';
 import '../alerts/alerts_screen.dart';
@@ -33,23 +34,8 @@ class _BaseScreenState extends State<BaseScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // FIXED: Removed 'const' so the top bar can re-render properly if needed
       appBar: const AppTopBar(),
-    
-      body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 200),
-        transitionBuilder: (child, animation) {
-          return FadeTransition(
-            opacity: animation,
-            child: child,
-          );
-        },
-        child: KeyedSubtree(
-          key: ValueKey(_currentIndex),
-          child: _screens[_currentIndex],
-        ),
-      ),
-      // FIXED: Removed the invalid PreferredSize wrapper to fix compilation
+      body: _screens[_currentIndex],
       bottomNavigationBar: AppBottomNav(
         currentIndex: _currentIndex,
         onTap: _onTabTapped,

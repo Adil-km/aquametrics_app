@@ -3,7 +3,14 @@ import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 
 class PumpControlCard extends StatelessWidget {
-  const PumpControlCard({super.key});
+  final bool isPumpOn;
+  final VoidCallback onToggle;
+
+  const PumpControlCard({
+    super.key,
+    required this.isPumpOn,
+    required this.onToggle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +19,7 @@ class PumpControlCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surfaceWhite,
         borderRadius: BorderRadius.circular(24),
-        boxShadow: AppShadows.card
+        boxShadow: AppShadows.card,
       ),
       child: Column(
         children: [
@@ -30,15 +37,17 @@ class PumpControlCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: AppColors.backgroundSoft,
+                  color: isPumpOn
+                      ? AppColors.primaryBlueLight.withOpacity(0.4)
+                      : AppColors.backgroundSoft,
                   borderRadius: BorderRadius.circular(16),
                 ),
-                child: const Text(
-                  'Pump OFF',
+                child: Text(
+                  isPumpOn ? 'Pump ON' : 'Pump OFF',
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.textSecondary,
+                    color: isPumpOn ? AppColors.primaryBlue : AppColors.textSecondary,
                   ),
                 ),
               ),
@@ -49,37 +58,43 @@ class PumpControlCard extends StatelessWidget {
             width: double.infinity,
             height: 56,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: onToggle,
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryBlue,
+                backgroundColor: isPumpOn ? const Color(0xFFC62828) : AppColors.primaryBlue,
                 foregroundColor: AppColors.surfaceWhite,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
                 elevation: 0,
               ),
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.power_settings_new),
-                  SizedBox(width: 8),
+                  const Icon(Icons.power_settings_new),
+                  const SizedBox(width: 8),
                   Text(
-                    'Turn Pump ON',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    isPumpOn ? 'Turn Pump OFF' : 'Turn Pump ON',
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ],
               ),
             ),
           ),
           const SizedBox(height: 16),
-          const Row(
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.check_circle_outline, size: 16, color: AppColors.primaryBlue),
-              SizedBox(width: 6),
+              Icon(
+                isPumpOn ? Icons.sync : Icons.check_circle_outline,
+                size: 16,
+                color: AppColors.primaryBlue,
+              ),
+              const SizedBox(width: 6),
               Text(
-                'Automatic mode is taking care of refills',
-                style: TextStyle(
+                isPumpOn
+                    ? 'Pump is actively running refills'
+                    : 'Automatic mode is taking care of refills',
+                style: const TextStyle(
                   fontSize: 12,
                   color: AppColors.textSecondary,
                 ),

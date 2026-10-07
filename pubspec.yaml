@@ -10,6 +10,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_svg: ^2.0.9
+  dio: ^5.4.0
+  provider: ^6.1.1
 
 dev_dependencies:
   flutter_test:
