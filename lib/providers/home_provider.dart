@@ -59,7 +59,10 @@ class HomeProvider extends ChangeNotifier {
       // Ensure we parse the dedicated pump data using the helper
       isPumpOn = _checkIfPumpIsOn(pumpData['pump']);
 
-      todayUsage = usageData['total_consumption'] ?? 0; 
+      // UPDATED: Corrected the JSON key to match the API and rounded the decimal to an int
+      final num rawUsage = usageData['total_consumed_liters'] ?? 0.0;
+      todayUsage = rawUsage.round(); 
+      
       lastSync = DateTime.now();
 
       state = ViewState.loaded;
