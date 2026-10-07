@@ -11,7 +11,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       child: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -19,7 +19,7 @@ class HomeScreen extends StatelessWidget {
               'Welcome back',
               style: TextStyle(
                 color: AppColors.textSecondary,
-                fontSize: 14,
+                fontSize: 13,
               ),
             ),
             const SizedBox(height: 4),
@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
               'Main Water Tank',
               style: TextStyle(
                 color: AppColors.textPrimary,
-                fontSize: 24,
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
               ),
             ),

@@ -1,3 +1,4 @@
+import 'package:aquametrics/app/theme/app_shadows.dart';
 import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 
@@ -28,6 +29,7 @@ class UsageSummaryCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surfaceWhite,
         borderRadius: BorderRadius.circular(24),
+        boxShadow: AppShadows.card,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

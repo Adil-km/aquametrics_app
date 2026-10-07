@@ -19,7 +19,7 @@ class PeriodSelector extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
       decoration: BoxDecoration(
         color: AppColors.backgroundSoft,
-        borderRadius: BorderRadius.circular(20), // Slightly rounder to match inner buttons
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min, // Hugs the content

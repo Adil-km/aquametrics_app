@@ -1,3 +1,4 @@
+import 'package:aquametrics/app/theme/app_shadows.dart';
 import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 
@@ -11,6 +12,7 @@ class PumpControlCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surfaceWhite,
         borderRadius: BorderRadius.circular(24),
+        boxShadow: AppShadows.card
       ),
       child: Column(
         children: [
@@ -28,7 +30,7 @@ class PumpControlCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: AppColors.textTertiary.withOpacity(0.2),
+                  color: AppColors.backgroundSoft,
                   borderRadius: BorderRadius.circular(16),
                 ),
                 child: const Text(

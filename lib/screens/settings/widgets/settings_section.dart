@@ -1,3 +1,4 @@
+import 'package:aquametrics/app/theme/app_shadows.dart';
 import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 
@@ -17,7 +18,7 @@ class SettingsSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.only(left: 4, bottom: 8),
+          padding: const EdgeInsets.only(left: 8, bottom: 8),
           child: Text(
             title.toUpperCase(),
             style: const TextStyle(
@@ -33,6 +34,7 @@ class SettingsSection extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.surfaceWhite,
             borderRadius: BorderRadius.circular(16),
+            boxShadow: AppShadows.card,
           ),
           child: Column(
             children: _buildSeparatedChildren(),

@@ -1,3 +1,4 @@
+import 'package:aquametrics/app/theme/app_shadows.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../app/theme/app_colors.dart';
@@ -45,6 +46,7 @@ class AlertCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surfaceWhite,
         borderRadius: BorderRadius.circular(24),
+        boxShadow: AppShadows.card,
       ),
       child: Column(
         children: [
@@ -171,7 +173,7 @@ class AlertCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
             ),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 2.0),

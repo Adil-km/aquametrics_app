@@ -1,3 +1,4 @@
+import 'package:aquametrics/app/theme/app_shadows.dart';
 import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 
@@ -27,6 +28,7 @@ class MetricCard extends StatelessWidget {
         decoration: BoxDecoration(
           color: AppColors.surfaceWhite,
           borderRadius: BorderRadius.circular(16),
+          boxShadow: AppShadows.card,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

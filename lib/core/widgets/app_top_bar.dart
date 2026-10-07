@@ -8,11 +8,12 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.fromLTRB(20,0,20,0),
       decoration: BoxDecoration(
         color: AppColors.backgroundMainTranslucent,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withAlpha(10),
+            color: AppColors.shadowBlack,
             blurRadius: 8.0,
             offset: const Offset(0, 1),
           ),
@@ -22,22 +23,19 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
         backgroundColor: AppColors.backgroundMainTranslucent,
         elevation: 0,
         scrolledUnderElevation: 0,
-        title: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-          child: const Text(
+        titleSpacing: 0,
+        title: const Text(
             'AquaMetrics',
             style: TextStyle(
               color: AppColors.textPrimary,
               fontWeight: FontWeight.bold,
               fontSize: 18,
             ),
-          ),
+    
         ),
         centerTitle: false,
         actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20.0),
-            child: SvgPicture.asset(
+           SvgPicture.asset(
               'assets/icons/profile.svg',
               width: 32,
               height: 32,
@@ -50,7 +48,6 @@ class AppTopBar extends StatelessWidget implements PreferredSizeWidget {
                 );
               },
             ),
-          ),
         ],
       ),
     );

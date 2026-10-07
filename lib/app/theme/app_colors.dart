@@ -19,4 +19,7 @@ class AppColors {
 
   // Borders & Lines
   static const Color dividerGray = Color(0xFFC5C6CE);
+
+  //shadows
+  static const Color shadowBlack = Color(0x0A000000);
 }

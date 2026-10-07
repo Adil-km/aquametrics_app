@@ -34,11 +34,21 @@ class _BaseScreenState extends State<BaseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // FIXED: Removed 'const' so the top bar can re-render properly if needed
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(70.0), // Allows top bar to go up to 70px
-        child: const AppTopBar(),
+      appBar: const AppTopBar(),
+    
+      body: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        transitionBuilder: (child, animation) {
+          return FadeTransition(
+            opacity: animation,
+            child: child,
+          );
+        },
+        child: KeyedSubtree(
+          key: ValueKey(_currentIndex),
+          child: _screens[_currentIndex],
+        ),
       ),
-      body: _screens[_currentIndex],
       // FIXED: Removed the invalid PreferredSize wrapper to fix compilation
       bottomNavigationBar: AppBottomNav(
         currentIndex: _currentIndex,

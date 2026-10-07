@@ -1,3 +1,4 @@
+import 'package:aquametrics/app/theme/app_shadows.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../app/theme/app_colors.dart';
@@ -17,6 +18,7 @@ class UsageTipCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surfaceWhite,
         borderRadius: BorderRadius.circular(24),
+        boxShadow: AppShadows.card
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

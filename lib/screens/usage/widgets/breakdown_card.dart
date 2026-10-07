@@ -1,3 +1,4 @@
+import 'package:aquametrics/app/theme/app_shadows.dart';
 import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 import 'period_selector.dart';
@@ -25,6 +26,7 @@ class BreakdownCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surfaceWhite,
         borderRadius: BorderRadius.circular(24),
+        boxShadow: AppShadows.card,
       ),
       child: Column(
         children: [

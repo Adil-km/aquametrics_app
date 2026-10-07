@@ -1,9 +1,10 @@
+import 'package:aquametrics/app/theme/app_shadows.dart';
 import 'package:flutter/material.dart';
 import '../../../../app/theme/app_colors.dart';
 
 class TankLevelCard extends StatelessWidget {
   const TankLevelCard({super.key});
-
+  final double level = 0.50;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -11,6 +12,7 @@ class TankLevelCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.surfaceWhite,
         borderRadius: BorderRadius.circular(24),
+        boxShadow: AppShadows.card,
       ),
       child: Column(
         children: [
@@ -19,7 +21,10 @@ class TankLevelCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFE6F7ED), // Light green tint
                   borderRadius: BorderRadius.circular(20),
@@ -48,10 +53,7 @@ class TankLevelCard extends StatelessWidget {
               ),
               const Text(
                 'Total 1,000 L',
-                style: TextStyle(
-                  color: AppColors.textTertiary,
-                  fontSize: 12,
-                ),
+                style: TextStyle(color: AppColors.textTertiary, fontSize: 12),
               ),
             ],
           ),
@@ -60,28 +62,34 @@ class TankLevelCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Tank Graphic
               Container(
                 width: 100,
                 height: 160,
                 decoration: BoxDecoration(
                   color: AppColors.backgroundSoft,
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: AppColors.primaryBlue.withOpacity(0.15),
+                    width: 1.5,
+                  ),
                 ),
-                alignment: Alignment.bottomCenter,
-                child: FractionallySizedBox(
-                  heightFactor: 0.72, // 72% full
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearMap.linearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          AppColors.primaryBlueLight,
-                          AppColors.primaryBlue,
-                        ],
+                clipBehavior: Clip.antiAlias,
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: FractionallySizedBox(
+                    heightFactor: level.clamp(0.0, 1.0),
+                    widthFactor: 1.0,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            AppColors.primaryBlue,
+                            AppColors.primaryBlueLight,
+                          ],
+                        ),
                       ),
-                      borderRadius: BorderRadius.circular(20),
                     ),
                   ),
                 ),
@@ -93,7 +101,10 @@ class TankLevelCard extends StatelessWidget {
                 children: [
                   const Text(
                     'Current Level',
-                    style: TextStyle(color: AppColors.textSecondary, fontSize: 14),
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 14,
+                    ),
                   ),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -149,7 +160,11 @@ class TankLevelCard extends StatelessWidget {
 }
 
 class LinearMap {
-  static LinearGradient linearGradient({required Alignment begin, required Alignment end, required List<Color> colors}) {
+  static LinearGradient linearGradient({
+    required Alignment begin,
+    required Alignment end,
+    required List<Color> colors,
+  }) {
     return LinearGradient(begin: begin, end: end, colors: colors);
   }
 }
