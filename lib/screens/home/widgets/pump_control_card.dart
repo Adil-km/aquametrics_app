@@ -4,11 +4,13 @@ import '../../../../app/theme/app_colors.dart';
 
 class PumpControlCard extends StatelessWidget {
   final bool isPumpOn;
+  final bool isAutoModeOn; // <-- Added
   final VoidCallback onToggle;
 
   const PumpControlCard({
     super.key,
     required this.isPumpOn,
+    required this.isAutoModeOn, // <-- Added
     required this.onToggle,
   });
 
@@ -85,15 +87,19 @@ class PumpControlCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(
-                isPumpOn ? Icons.sync : Icons.check_circle_outline,
+                isPumpOn
+                    ? Icons.sync
+                    : (isAutoModeOn ? Icons.check_circle_outline : Icons.info_outline), // <-- Dynamic Icon
                 size: 16,
-                color: AppColors.primaryBlue,
+                color: isPumpOn || isAutoModeOn ? AppColors.primaryBlue : AppColors.textSecondary,
               ),
               const SizedBox(width: 6),
               Text(
                 isPumpOn
                     ? 'Pump is actively running refills'
-                    : 'Automatic mode is taking care of refills',
+                    : (isAutoModeOn
+                        ? 'Automatic mode is taking care of refills'
+                        : 'Automatic mode is off. Manual control only.'), // <-- Dynamic Text
                 style: const TextStyle(
                   fontSize: 12,
                   color: AppColors.textSecondary,

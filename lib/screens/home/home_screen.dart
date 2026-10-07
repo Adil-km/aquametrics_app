@@ -41,9 +41,10 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                const Text(
-                  'Main Water Tank',
-                  style: TextStyle(
+                // UPDATED: Now displays the dynamic tank name
+                Text(
+                  provider.tankName, 
+                  style: const TextStyle(
                     color: AppColors.textPrimary,
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
@@ -54,6 +55,7 @@ class HomeScreen extends StatelessWidget {
                 TankLevelCard(
                   levelPercent: provider.tankLevel,
                   remainingLiters: provider.remainingLiters,
+                  totalCapacity: provider.tankCapacity, // UPDATED: Passed dynamic capacity
                 ),
 
                 const SizedBox(height: 16),
@@ -75,7 +77,6 @@ class HomeScreen extends StatelessWidget {
                       subText: 'Used so far',
                     ),
                     const SizedBox(width: 12),
-                    // Updated Live Sync Card
                     MetricCard(
                       icon: Icons.sync,
                       title: 'Updated',
@@ -91,6 +92,7 @@ class HomeScreen extends StatelessWidget {
 
                 PumpControlCard(
                   isPumpOn: provider.isPumpOn,
+                  isAutoModeOn: provider.isAutoModeOn,
                   onToggle: provider.togglePump,
                 ),
 

@@ -46,4 +46,30 @@ class ApiService {
     return response.data;
   }
 
+  Future<List<dynamic>> getAlerts(int tankId) async {
+    final response = await _dio.get('/tanks/$tankId/alerts');
+    return response.data;
+  }
+
+  // Gets current tank information (capacity, height)
+  Future<Map<String, dynamic>> getTankInfo(int tankId) async {
+    final response = await _dio.get('/tanks/$tankId');
+    return response.data;
+  }
+
+  // Updates tank information
+  Future<void> updateTankInfo(int tankId, Map<String, dynamic> data) async {
+    await _dio.put('/tanks/$tankId', data: data);
+  }
+
+  // Gets current pump configuration thresholds
+  Future<Map<String, dynamic>> getPumpConfig(int tankId) async {
+    final response = await _dio.get('/tanks/$tankId/pump/config');
+    return response.data;
+  }
+
+  // Updates pump configuration thresholds
+  Future<void> updatePumpConfig(int tankId, Map<String, dynamic> data) async {
+    await _dio.post('/tanks/$tankId/pump/config', data: data);
+  }
 }
